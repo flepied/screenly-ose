@@ -1,5 +1,7 @@
 FROM screenly/srly-ose-base
 
+RUN [ "cross-build-start" ]
+
 ADD requirements/requirements-websocket.txt /tmp/requirements.txt
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
@@ -13,5 +15,7 @@ ARG GIT_SHORT_HASH
 ENV GIT_SHORT_HASH=$GIT_SHORT_HASH
 ARG GIT_BRANCH
 ENV GIT_BRANCH=$GIT_BRANCH
+
+RUN [ "cross-build-end" ]
 
 CMD ["python", "websocket_server_layer.py"]

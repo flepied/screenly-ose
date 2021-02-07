@@ -19,13 +19,15 @@ if ! which balena > /dev/null; then
 fi
 
 
-read -p "What is the target device? (pi1-pi4)? " -r DEVICE_TYPE
+[ -n "$DEVICE_TYPE" ] || read -p "What is the target device? (pi1-pi4)? " -r DEVICE_TYPE
 
-echo 'Here are your Balena apps:'
-balena apps
-echo
+if [ -z "$APP_NAME" ]; then
+    echo 'Here are your Balena apps:'
+    balena apps
+    echo
 
-read -p "Enter the app name of the app you want to deploy to (needs to be SLUG): " -r APP_NAME
+    read -p "Enter the app name of the app you want to deploy to (needs to be SLUG): " -r APP_NAME
+fi
 
 mkdir -p .balena
 cat <<EOF > .balena/balena.yml
@@ -48,4 +50,8 @@ if [ "$DEVICE_TYPE" = "pi4" ]; then
     balena env add BALENA_HOST_CONFIG_dtparam "\"i2c_arm=on\",\"spi=on\",\"audio=on\",\"vc4-kms-v3d\"" --application "$APP_NAME"
 fi
 
-balena deploy "$APP_NAME"
+if [ "$(uname -m)" = x86_64 ]; then
+    OPT=--emulated
+fi
+
+balena deploy "$APP_NAME" $OPT

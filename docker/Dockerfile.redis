@@ -1,5 +1,7 @@
 FROM balenalib/rpi-raspbian:buster
 
+RUN [ "cross-build-start" ]
+
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
     redis-server && \
@@ -14,5 +16,7 @@ ENV GIT_BRANCH=$GIT_BRANCH
 
 RUN sed -i 's/^bind.*/bind 0.0.0.0/g' /etc/redis/redis.conf
 RUN sed -i 's/^protected-mode.*/protected-mode no/g' /etc/redis/redis.conf
+
+RUN [ "cross-build-end" ]
 
 CMD ["redis-server", "--protected-mode", "no"]

@@ -1,4 +1,7 @@
 FROM balenalib/rpi-raspbian:buster
+
+RUN [ "cross-build-start" ]
+
 # This list needs to be trimmed back later
 RUN apt-get update && \
     apt-get -y install --no-install-recommends \
@@ -149,5 +152,7 @@ RUN useradd -g video viewer
 WORKDIR /usr/src/app
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app/
+
+RUN [ "cross-build-end" ]
 
 CMD ["bash", "./bin/start_viewer.sh"]

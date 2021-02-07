@@ -1,11 +1,20 @@
 FROM screenly/srly-ose-base
 
+RUN [ "cross-build-start" ]
+
+RUN apt-get update && \
+    apt-get -y install --no-install-recommends libcec-dev && \
+    apt-get clean
+
 ADD requirements/requirements.txt /tmp/requirements.txt
+
 RUN pip install --no-cache-dir -r /tmp/requirements.txt
 
 RUN mkdir -p /usr/src/app
 COPY . /usr/src/app/
 WORKDIR /usr/src/app
+
+RUN [ "cross-build-end" ]
 
 ARG GIT_HASH
 ENV GIT_HASH=$GIT_HASH
